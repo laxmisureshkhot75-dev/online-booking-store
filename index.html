@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookNest | Online Book Store</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" onclick="showPage('home');return false;"><span class="brand-icon">B</span> BookNest</a>
+    <nav>
+      <a href="#" onclick="showPage('home');return false;">Home</a>
+      <a href="#" onclick="showPage('catalog');return false;">Books</a>
+      <a href="#" id="dashboardLink" class="hidden" onclick="showPage('dashboard');return false;">Dashboard</a>
+    </nav>
+    <div class="nav-actions" id="navActions">
+      <button class="btn btn-light" onclick="showPage('login')">Login</button>
+      <button class="btn btn-primary" onclick="showPage('register')">Create account</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="homePage" class="page hero">
+      <div class="hero-copy">
+        <span class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</span>
+        <h1>Discover stories.<br><span>Collect knowledge.</span></h1>
+        <p>Explore a world of books, share your favourites and manage your own book collection in one simple place.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-large" onclick="showPage('catalog')">Explore books</button>
+          <button class="btn btn-light btn-large" onclick="showPage('register')">Join BookNest</button>
+        </div>
+        <div class="hero-note">A little reading goes a long way.</div>
+      </div>
+      <div class="hero-art" aria-label="Decorative book illustration">
+        <div class="sun"></div><div class="book book-one">READ<br>MORE</div>
+        <div class="book book-two">NEW<br>IDEAS</div><div class="book book-three">YOUR<br>STORY</div>
+        <div class="plant">✦</div>
+      </div>
+    </section>
+
+    <section id="catalogPage" class="page content-page hidden">
+      <div class="section-heading"><div><span class="eyebrow">THE BOOKSHELF</span><h1>Explore books</h1></div>
+        <input id="searchBooks" class="search" placeholder="Search title, author or category..." oninput="renderCatalog()" />
+      </div>
+      <div id="catalogGrid" class="book-grid"></div>
+    </section>
+
+    <section id="loginPage" class="page auth-page hidden">
+      <div class="auth-card"><span class="eyebrow">WELCOME BACK</span><h1>Login to BookNest</h1>
+        <p class="muted">Continue your reading journey.</p>
+        <form id="loginForm">
+          <label>Email address<input type="email" id="loginEmail" required placeholder="you@example.com" /></label>
+          <label>Password<input type="password" id="loginPassword" required minlength="8" placeholder="Enter your password" /></label>
+          <button class="btn btn-primary btn-full" type="submit">Login</button>
+        </form>
+        <p class="switch-text">New to BookNest? <a href="#" onclick="showPage('register');return false;">Create an account</a></p>
+        <div id="loginMessage" class="message"></div>
+      </div>
+    </section>
+
+    <section id="registerPage" class="page auth-page hidden">
+      <div class="auth-card"><span class="eyebrow">START YOUR JOURNEY</span><h1>Create account</h1>
+        <p class="muted">Sign up to manage your personal bookshelf.</p>
+        <form id="registerForm">
+          <label>Full name<input type="text" id="registerName" required minlength="2" placeholder="Your name" /></label>
+          <label>Email address<input type="email" id="registerEmail" required placeholder="you@example.com" /></label>
+          <label>Password<input type="password" id="registerPassword" required minlength="8" placeholder="At least 8 characters" /></label>
+          <button class="btn btn-primary btn-full" type="submit">Create account</button>
+        </form>
+        <p class="switch-text">Already registered? <a href="#" onclick="showPage('login');return false;">Login</a></p>
+        <div id="registerMessage" class="message"></div>
+      </div>
+    </section>
+
+    <section id="dashboardPage" class="page content-page hidden">
+      <div class="dashboard-head">
+        <div><span class="eyebrow">YOUR PERSONAL SPACE</span><h1>My Dashboard</h1><p class="muted">Welcome, <strong id="welcomeName">Reader</strong>!</p></div>
+        <button class="btn btn-outline" onclick="logout()">Logout</button>
+      </div>
+      <div class="stats"><div class="stat-card"><span>My books</span><strong id="bookCount">0</strong></div><div class="stat-card"><span>Account</span><strong>Active</strong></div></div>
+      <div class="dashboard-columns">
+        <div class="panel">
+          <h2 id="bookFormTitle">Add a book</h2>
+          <form id="bookForm">
+            <input type="hidden" id="bookId" />
+            <label>Book title<input id="bookTitle" required placeholder="Enter book title" /></label>
+            <label>Author<input id="bookAuthor" required placeholder="Author name" /></label>
+            <label>Category<select id="bookCategory"><option>Motivational</option><option>Biography</option><option>Education</option><option>Competitive Exams</option><option>Fiction</option><option>Technology</option><option>Health & Fitness</option><option>General</option></select></label>
+            <label>Price (₹)<input id="bookPrice" type="number" min="0" step="0.01" required placeholder="250" /></label>
+            <label>Description<textarea id="bookDescription" rows="3" placeholder="Short book description"></textarea></label>
+            <button class="btn btn-primary btn-full" type="submit" id="saveBookButton">Add book</button>
+            <button class="btn btn-light btn-full hidden" type="button" id="cancelEdit" onclick="resetBookForm()">Cancel edit</button>
+          </form>
+          <div id="bookMessage" class="message"></div>
+        </div>
+        <div class="panel profile-panel">
+          <h2>My profile</h2>
+          <form id="profileForm">
+            <label>Full name<input id="profileName" required minlength="2" /></label>
+            <label>Email address<input id="profileEmail" type="email" disabled /></label>
+            <button class="btn btn-outline btn-full" type="submit">Update profile</button>
+          </form>
+          <div id="profileMessage" class="message"></div>
+          <p class="small muted">Your dashboard is private. Only books added by your account appear below.</p>
+        </div>
+      </div>
+      <div class="my-books-heading"><h2>My books</h2><span class="muted">Manage the books you have added</span></div>
+      <div id="myBooksGrid" class="book-grid"></div>
+    </section>
+  </main>
+
+  <footer><strong>BookNest</strong><span>Read. Learn. Grow.</span><small>© 2026 BookNest Online Book Store – Internship Project</small></footer>
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
